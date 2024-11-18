@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1731534714 source:c:\users\korisnik\desktop\c\l05-6\main.c
+	<stdio.h>
+	<stdlib.h>
+
+1731580642 source:c:\users\korisnik\desktop\c\p1 - lab\l05-6 mod\main.c
+	<stdio.h>
+	<stdlib.h>
+
