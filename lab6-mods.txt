@@ -1,0 +1,532 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+//  Ispis svih prostih brojeva iz segmenta [a,b]	
+
+int main()
+{
+    int a, b;
+    do {
+        
+        printf("\nUnesi opseg [a,b], takav da je a<b ");
+        scanf("%d %d", &a, &b);
+    }
+    while(a<=0 || b<=0 || b<=a);
+
+    for(int i=a; i<=b; i++) {
+    int prost=1;
+    if(i<=1)    {
+        prost=0;
+    }
+    else {
+        for(int j=2; j<=sqrt(i); j++)   {
+            if(i%j==0)  {
+                prost=0;
+                break;
+            }
+        }
+    }
+  if(prost) {
+      printf("Prost je broj %d\n", i);
+  }
+}
+
+    return 0;
+}
+
+-------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  ispis najmanjeg prostog broja veceg od unesenog
+takvog da u oktalnom sadrzi cifru 7     */
+
+int main()
+{
+    int n, prost=1, brD=0, nextNum;
+    do {
+        printf("Unesi n prirodan broj! ");
+        scanf("%d", &n);
+    }
+    while(n<=0);
+    nextNum=n+1;
+    while(1)  {
+        brD=0;
+        for(int j=1; j<=nextNum; j++) {
+            if(nextNum%j==0)  {
+                brD++;
+            }
+        }
+        if (brD==2) {
+            int num=nextNum;
+            while(num>0)  {
+                if(num%8==7)    {
+                    printf("Trazeni broj je %d", nextNum);
+                    return 0;
+                }
+                num/=8;
+            }
+        }
+        nextNum++;
+    }
+    printf("Prvi veci prost broj od n je %d\n", nextNum);
+    return 0;
+}
+
+---------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  ispis najveceg prostog broja manjeg od n  */
+
+int main()
+{
+    int n, prost=1, brD=0, prevNum;
+    do {
+        printf("Unesi n prirodan broj! ");
+        scanf("%d", &n);
+    }
+    while(n<=0);
+    prevNum=n-1;
+    while(1)  {
+        brD=0;
+        for(int j=prevNum; j>=1; j--) {
+            if(prevNum%j==0)  {
+                brD++;
+            }
+        }
+        if (brD==2) {
+            break;
+        }
+        prevNum++;
+    }
+    printf("Prvi manji prost broj od n je %d\n", prevNum);
+    return 0;
+}
+
+------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  ispis najmanjeg broja koji je veci od unesenog n, takvog da je zbir faktorijela njegovih cifara jednak samom tom broju */
+
+int main()
+{
+    int n, cifra=1, sum=0;
+
+    do {
+        printf("Unesi neki n prirodan broj ");
+        scanf("%d", &n);
+    }
+    while(n<=0);
+
+    for(int i=n+1; ; i++)  {
+        sum=0;
+        int temp=i;
+    while(temp>0)  {
+        cifra=temp%10;
+        int fakt=1;
+
+        for(int j=1; j<=cifra; j++) {
+            fakt*=j;
+        }
+        sum+=fakt;
+        temp/=10;
+    }
+        if(sum==i){
+            printf("Najmanji broj veci od %d ciji je zbir faktorijela njegovih cifara jednak tom broju je %d\n", n, sum);
+            break;
+        }
+    }
+
+    return 0;
+}
+
+-------------------------------------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  ispis svih brojeva iz opsega [a,b] koji su jednaki zbiru 
+faktorijela svojih cifara   */
+
+int main()
+{
+    int a, b, cifra=1, sum=0;
+
+    do {
+        printf("Unesi opseg [a,b] ");
+        scanf("%d %d", &a, &b);
+    }
+    while(a<=0 || b<=0 || b<=a);
+
+    for(int i=a; i<=b; i++)  {
+        sum=0;
+        int temp=i;
+    while(temp>0)  {
+        cifra=temp%10;
+        int fakt=1;
+
+        for(int j=1; j<=cifra; j++) {
+            fakt*=j;
+        }
+        sum+=fakt;
+        temp/=10;
+    }
+        if(sum==i){
+            printf("Najmanji broj veci od %d ciji je zbir faktorijela njegovih cifara jednak tom broju je %d\n", i, sum);
+          //  break;
+        }
+    }
+
+    return 0;
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define EPS 1e-5
+
+/*  ispis korijena za svako uneseno n i x do nedozvoljenog unosa  */
+
+int main()
+{
+double n, x, Xs, Xn;
+    do
+    {
+        printf("\nUnesi broj x i korijen n:");
+        scanf("%lf%lf",&x, &n);
+        
+        if(n<1 || x<0)  {
+            printf("Greska! Nedozvoljen unos!\n");
+           // return 1;     // samo prekine program s porukom o postojanju greske
+        }
+        
+        Xn = (x+1)/n;
+    do
+    {
+        Xs=Xn;
+        double s=1;
+        for(int i=0; i<n-1; i++)
+        {
+            s*=Xs;
+        }
+        Xn = ((n-1)*Xs + x/s)/n;
+    }
+    while(fabs(Xs-Xn)>EPS);
+    printf("Korijen je: %lf.\n", Xn);
+
+    }
+    while(n>=1 || x>=0);
+    
+    
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define EPS 1e-5
+
+/*  ispis prvih n korijena unesenog broja x    */
+
+int main()
+{
+double n, x, Xs, Xn;
+    do
+    {
+        printf("Unesi broj x i korijen n: ");
+        scanf("%lf%lf",&x, &n);
+    }
+    while(n<1 || x<0);
+    
+    for(int korijen=1; korijen<=n; korijen++)   {
+        
+    Xn = (x+1)/korijen;
+    do
+    {
+        Xs=Xn;
+        double s=1;
+        for(int i=0; i<korijen-1; i++)
+        {
+            s*=Xs;
+        }
+        Xn = ((korijen-1)*Xs + x/s)/korijen;
+    }
+    while(fabs(Xs-Xn)>EPS);
+    printf("%d. korijen broja %lf je: %lf.\n", korijen, x, Xn);
+}
+    return 0;
+}
+
+-------------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#define EPS 1e-5
+
+/*  ispis korijena do k+1, gdje je k uneseni stepen korijena, pri cemu se na
+    rezultat dodaje 0.5  */
+
+int main()
+{
+double k, x, Xs, Xn;
+    do
+    {
+        printf("Unesi broj x i korijen k: ");
+        scanf("%lf%lf",&x, &k);
+    }
+    while(k<1 || x<0);
+
+    for(int korijen=1; korijen<=k+1; korijen++)  {
+        Xn=(x+1)/korijen;
+
+    do
+    {
+        Xs=Xn;
+        double s=1;
+        for(int i=0; i<korijen-1; i++)
+        {
+            s*=Xs;
+        }
+        Xn = ((korijen-1)*Xs + x/s)/korijen+0.5;
+    }
+    while(fabs(Xs-Xn)>EPS);
+    printf("%d. korijen broja %lf je: %lf.\n", korijen, x, Xn);
+    }
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  suma gdje je bi cifra na poziciji i broja b koji ima k cifara (tj. b=bk-1bk-2...b2b1b0). Na primjer, vrijednost tražene sume
+za broj 2534 je 154 (24 + 53 + 32 + 41 = 16 + 125 + 9 + 4 = 154). 
+
+    modif: zbir svake cifre pomnozene dvojkom stepenovano odg. pozicijom 
+           cifre u broju     */
+
+int main()
+{
+    int b, sum=0, c, temp, k=0, div=1;
+    do {
+        printf("Unesi neki prirodan broj! ");
+        scanf("%d", &b);
+    }
+    while(b<=0);
+
+    temp=b;
+    while(temp>0)  {
+        temp/=10;
+        k++;
+        div*=10;
+    }
+    temp=b;
+    for(int pozicija=k; pozicija>0; pozicija--) {
+        div/=10;
+        c=temp/div;
+        temp%=div;
+
+        int stepen=1;
+        for(int i=0; i<pozicija; i++)   {
+            stepen=c*(1<<i);
+            
+        }
+      //  printf("%d ", stepen);
+        sum+=stepen;
+    }
+
+    printf("Rezultat je %d", sum);
+    return 0;
+}
+
+-----------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  suma gdje je bi cifra na poziciji i broja b koji ima k cifara (tj. b=bk-1bk-2...b2b1b0). Na primjer, vrijednost tražene sume
+za broj 2534 je 154 (24 + 53 + 32 + 41 = 16 + 125 + 9 + 4 = 154). 
+    modif: stepenuje se komplementom cifre  */
+
+int main()
+{
+    int b, sum=0, c, temp, k=0, div=1, komplement;
+    do {
+        printf("Unesi neki prirodan broj! ");
+        scanf("%d", &b);
+    }
+    while(b<=0);
+
+    temp=b;
+    while(temp>0)  {
+        temp/=10;
+        k++;
+        div*=10;
+    }
+    temp=b;
+    for(int pozicija=k; pozicija>0; pozicija--) {
+        div/=10;
+        c=temp/div;
+        temp%=div;
+        
+        komplement=9-c;
+
+        int stepen=1;
+        for(int i=0; i<komplement; i++)   {
+            stepen*=c;
+        }
+        sum+=stepen;
+    }
+
+    printf("Rezultat je %d", sum);
+    return 0;
+}
+
+----------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*   */
+
+int main()
+{
+    int b, sum=0, c, temp, k=0, div=1;
+    do {
+        printf("Unesi neki prirodan broj! ");
+        scanf("%d", &b);
+    }
+    while(b<=0);
+
+    temp=b;
+    while(temp>0)  {
+        temp/=10;
+        k++;
+        div*=10;
+    }
+    temp=b;
+    for(int pozicija=k; pozicija>0; pozicija--) {
+        div/=10;
+        c=temp/div;
+        temp%=div;
+
+        int stepen=1;
+        for(int i=0; i<pozicija; i++)   {
+            if(pozicija%2==0 || pozicija==0)   {		
+            stepen*=c;						// ako iskoristis pozicija%2!=0 mozes direktno promijeniti stepen=-stepen, naravno nakon 									// izracuna originalnog stepena
+            }
+            else {
+                stepen*=c*(-1);
+            }
+        }
+        sum+=stepen;
+    }
+
+    printf("Rezultat je %d", sum);
+    return 0;
+}
+
+------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  suma gdje je bi cifra na poziciji i broja b koji ima k cifara (tj. b=bk-1bk-2...b2b1b0). Na primjer, vrijednost tražene sume
+za broj 2534 je 154 (24 + 53 + 32 + 41 = 16 + 125 + 9 + 4 = 154).   
+
+    modif: bi^bi    */
+
+int main()
+{
+    int b, sum=0, c, temp, k=0, div=1;
+    do {
+        printf("Unesi neki prirodan broj! ");
+        scanf("%d", &b);
+    }
+    while(b<=0);
+
+    temp=b;
+    while(temp>0)  {
+        temp/=10;
+        k++;
+        div*=10;
+    }
+    temp=b;
+    for(int pozicija=k; pozicija>0; pozicija--) {
+        div/=10;
+        c=temp/div;
+        temp%=div;
+
+        int stepen=1;
+        for(int i=0; i<pozicija; i++)   {
+            stepen*=pozicija;
+        }
+        sum+=stepen;
+    }
+
+    printf("Rezultat je %d", sum);
+    return 0;
+}
+
+-------------------------------------------------------------------------------------------
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+/*  ispis sume brojeva cije su cifre stepenovane po pocetnom uslovu unutar zadatog intervala     */
+
+int main()
+{
+    int a, b, sum=0, c, temp, k=0, div=1;
+    do {
+        printf("Unesi interval [a,b]! ");
+        scanf("%d %d", &a, &b);
+    }
+    while(a<=0 || b<=0 || b<=a);
+
+    for(int l=a; l<=b; l++) {
+    temp=l;
+    k=0;
+    int numSum=0;
+    while(temp>0)  {
+        c=temp%10;
+        temp/=10;
+        int stepen=1;
+        for(int i=0; i<k+1; i++)   {
+            stepen*=c;
+        }
+        numSum+=stepen;
+        k++;
+    }
+    sum+=numSum;
+    }
+
+    printf("Rezultat je %d", sum);
+    return 0;
+}
+
+---------------------------------------------------------------------------------
