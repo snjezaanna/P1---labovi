@@ -1,0 +1,1253 @@
+L2
+-----------------------------------------------------------
+7. ispis po prosjeku
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int dan;
+    int mjesec;
+    int godina;
+} DATUM;
+
+typedef struct {
+    int brojIndeksa;
+    char ime[50];
+    char prezime[50];
+    DATUM datumRodjenja;
+    double prosjek;
+} STUDENT;
+
+int main() {
+    int n;
+    STUDENT studenti[100];
+
+    printf("Unesite broj studenata: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; ++i) {
+        printf("Unesite podatke za studenta %d (broj indeksa, ime, prezime, datum rodjenja (dan mjesec godina), prosjek):\n", i + 1);
+        scanf("%d %s %s %d %d %d %lf", &studenti[i].brojIndeksa, studenti[i].ime, studenti[i].prezime,
+              &studenti[i].datumRodjenja.dan, &studenti[i].datumRodjenja.mjesec, &studenti[i].datumRodjenja.godina,
+              &studenti[i].prosjek);
+    }
+
+    // Sortiranje studenata po datumu rodjenja
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (studenti[j].datumRodjenja.godina > studenti[j + 1].datumRodjenja.godina ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec > studenti[j + 1].datumRodjenja.mjesec) ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec == studenti[j + 1].datumRodjenja.mjesec &&
+                studenti[j].datumRodjenja.dan > studenti[j + 1].datumRodjenja.dan)) {
+
+                STUDENT temp = studenti[j];
+                studenti[j] = studenti[j + 1];
+                studenti[j + 1] = temp;
+            }
+        }
+    }
+
+    // Ispis formatiranog niza podataka po datumu rodjenja
+    printf("Sortirani studenti po datumu rođenja:\n");
+    printf("RB. PREZIME           IME               DATUM RODJ.   PROSJEK\n");
+    printf("=== =============== =============== =========== =======\n");
+
+    for (int i = 0; i < n; ++i) {
+        printf("%-3d %-15s %-15s %02d.%02d.%04d. %.2f\n", i + 1, studenti[i].prezime, studenti[i].ime,
+               studenti[i].datumRodjenja.dan, studenti[i].datumRodjenja.mjesec, studenti[i].datumRodjenja.godina,
+               studenti[i].prosjek);
+    }
+
+    printf("=== =============== =============== =========== =======\n");
+
+    // Sortiranje studenata po opadajucem prosjeku
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (studenti[j].prosjek < studenti[j + 1].prosjek) {
+                STUDENT temp = studenti[j];
+                studenti[j] = studenti[j + 1];
+                studenti[j + 1] = temp;
+            }
+        }
+    }
+
+    // Ispis formatiranog niza podataka po opadajućem prosjeku
+    printf("Sortirani studenti po opadajućem prosjeku:\n");
+    printf("RB. PREZIME           IME               DATUM RODJ.   PROSJEK\n");
+    printf("=== =============== =============== =========== =======\n");
+
+    for (int i = 0; i < n; ++i) {
+        printf("%-3d %-15s %-15s %02d.%02d.%04d. %.2f\n", i + 1, studenti[i].prezime, studenti[i].ime,
+               studenti[i].datumRodjenja.dan, studenti[i].datumRodjenja.mjesec, studenti[i].datumRodjenja.godina,
+               studenti[i].prosjek);
+    }
+
+    printf("=== =============== =============== =========== =======\n");
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------------
+3. proizvod kompleksnih brojeva
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Dodao ovu biblioteku za sqrt funkciju
+#define max 100
+
+typedef struct {
+    double re, im;
+} kompleks;
+
+int main() {
+    int n;
+    kompleks niz[max], suma, proizvod;
+    double moduo[max];
+
+    // Inicijalizacija proizvoda
+    
+    proizvod.re = 1.0;
+    proizvod.im = 0.0;
+
+    do {
+        printf("broj kompleksnih brojeva: ");
+        scanf("%d", &n);
+    } while (n <= 0);
+
+    printf("unos kompleksnih brojeva:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%lf %lf", &niz[i].re, &niz[i].im);
+        moduo[i] = sqrt(niz[i].re * niz[i].re + niz[i].im * niz[i].im);
+
+        // Računanje proizvoda
+        kompleks tempProizvod = proizvod;
+        proizvod.re = tempProizvod.re * niz[i].re - tempProizvod.im * niz[i].im;
+        proizvod.im = tempProizvod.re * niz[i].im + tempProizvod.im * niz[i].re;
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (moduo[i] < moduo[j]) {
+                kompleks temp = niz[i];
+                niz[i] = niz[j];
+                niz[j] = temp;
+                double tempModuo = moduo[i];
+                moduo[i] = moduo[j];
+                moduo[j] = tempModuo;
+            }
+        }
+    }
+
+    printf("Sortirani niz:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%.2lf + %.2lfi (moduo: %.2f)\n", niz[i].re, niz[i].im, moduo[i]);
+    }
+
+    // Ispis proizvoda
+    printf("Proizvod: %.2lf + %.2lfi\n", proizvod.re, proizvod.im);
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------
+L1
+-----------------------------------------------------------------------------------------
+2. Transponuj proizvod matrica
+
+#include <stdio.h>
+#include <stdlib.h>
+#define max 10
+
+typedef struct {
+    int mat[max][max];
+    int n, m;
+} matrica;
+
+matrica scan() {
+    matrica matr;
+    do {
+        printf("dimenzije matrice: ");
+        scanf("%d %d", &matr.n, &matr.m);
+    } while (matr.n <= 0 || matr.m <= 0 || matr.n > 10 || matr.m > 10);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("mat[%d][%d] = ", i, j);
+            scanf("%d", &matr.mat[i][j]);
+        }
+    }
+    return matr;
+}
+
+void write(matrica matr) {
+    printf("Matrica %dx%d:\n", matr.n, matr.m);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("%d ", matr.mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+matrica sumarum(matrica matr1, matrica matr2) {
+    matrica sum;
+    if (matr1.n == matr2.n && matr1.m == matr2.m) {
+        sum.n = matr1.n;
+        sum.m = matr1.m;
+        for (int i = 0; i < matr1.n; i++) {
+            for (int j = 0; j < matr1.m; j++) {
+                sum.mat[i][j] = matr1.mat[i][j] + matr2.mat[i][j];
+            }
+        }
+    } else {
+        printf("Matrice se ne mogu sabrati jer nisu istih dimenzija!\n");
+        sum.n = 0;
+    }
+    return sum;
+}
+
+matrica product(matrica matr1, matrica matr2) {
+    matrica prod;
+    if (matr1.m == matr2.n) {
+        prod.n = matr1.n;
+        prod.m = matr2.m;
+        for (int i = 0; i < matr1.n; i++) {
+            for (int j = 0; j < matr2.m; j++) {
+                prod.mat[i][j] = 0;
+                for (int k = 0; k < matr1.m; k++) {
+                    prod.mat[i][j] += matr1.mat[i][k] * matr2.mat[k][j];
+                }
+            }
+        }
+    } else {
+        printf("Matrice se ne mogu pomnoziti!\n");
+        prod.n = 0;
+    }
+    return prod;
+}
+
+matrica transpose(matrica matr) {
+    matrica transp;
+    transp.n = matr.m;
+    transp.m = matr.n;
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            transp.mat[j][i] = matr.mat[i][j];
+        }
+    }
+    return transp;
+}
+
+int main() {
+    matrica matr1, matr2, sum, prod, transpProd;
+
+    printf("Unesi dimenzije matrice 1:\n");
+    matr1 = scan();
+    write(matr1);
+
+    printf("Unesi dimenzije matrice 2:\n");
+    matr2 = scan();
+    write(matr2);
+
+    sum = sumarum(matr1, matr2);
+    if (sum.n != 0) {
+        printf("Zbir matrica je:\n");
+        write(sum);
+    }
+
+    prod = product(matr1, matr2);
+    if (prod.n != 0) {
+        printf("Proizvod matrica je:\n");
+        write(prod);
+
+        transpProd = transpose(prod);
+        printf("Transponovani proizvod matrica je:\n");
+        write(transpProd);
+    }
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------
+5. Provjera pravouglog trougla
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Potrebno za sqrt funkciju
+
+// Struktura za trougao
+typedef struct {
+    double a;
+    double b;
+    double c;
+} TROUGAO;
+
+int main() {
+    TROUGAO t;
+    double obim, povrsina, s;
+
+    // Učitavanje stranica trougla
+    printf("Unesite duzine stranica trougla:\n");
+    scanf("%lf %lf %lf", &t.a, &t.b, &t.c);
+
+    // Provera da li je trougao validan
+    if (t.a + t.b > t.c && t.a + t.c > t.b && t.b + t.c > t.a) {
+        // Izračunavanje obima
+        obim = t.a + t.b + t.c;
+
+        // Izračunavanje površine koristeći Heronovu formulu
+        s = obim / 2;
+        povrsina = sqrt(s * (s - t.a) * (s - t.b) * (s - t.c));
+
+        // Provera da li je trougao pravougli
+        double a2 = t.a * t.a;
+        double b2 = t.b * t.b;
+        double c2 = t.c * t.c;
+        if (fabs(a2 + b2 - c2) < 1e-6 || fabs(a2 + c2 - b2) < 1e-6 || fabs(b2 + c2 - a2) < 1e-6) {
+            printf("Trougao je pravougli.\n");
+        } else {
+            printf("Trougao nije pravougli.\n");
+        }
+
+        // Ispis rezultata
+        printf("Obim trougla: %.2f\n", obim);
+        printf("Povrsina trougla: %.2f\n", povrsina);
+    } else {
+        printf("Unete stranice ne cine validan trougao.\n");
+    }
+
+    return 0;
+}
+
+--------------------------------------------------------------------------------------------------------
+L4
+--------------------------------------------------------------------------------------------------------
+3. Dodaj ispis sume
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Dodao ovu biblioteku za sqrt funkciju
+#define max 100
+
+typedef struct {
+    double re, im;
+} kompleks;
+
+int main() {
+    int n;
+    kompleks niz[max], suma, proizvod;
+    double moduo[max];
+
+    // Inicijalizacija sume i proizvoda
+    suma.re = suma.im = 0.0;
+    proizvod.re = 1.0;
+    proizvod.im = 0.0;
+
+    do {
+        printf("broj kompleksnih brojeva: ");
+        scanf("%d", &n);
+    } while (n <= 0);
+
+    printf("unos kompleksnih brojeva:\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%lf %lf", &niz[i].re, &niz[i].im);
+        moduo[i] = sqrt(niz[i].re * niz[i].re + niz[i].im * niz[i].im);
+
+        // Računanje sume
+        suma.re += niz[i].re;
+        suma.im += niz[i].im;
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (moduo[i] < moduo[j]) {
+                kompleks temp = niz[i];
+                niz[i] = niz[j];
+                niz[j] = temp;
+                double tempModuo = moduo[i];
+                moduo[i] = moduo[j];
+                moduo[j] = tempModuo;
+            }
+        }
+    }
+
+    printf("Sortirani niz:\n");
+    for (int i = 0; i < n; i++) {
+        printf("%.2lf + %.2lfi (moduo: %.2f)\n", niz[i].re, niz[i].im, moduo[i]);
+    }
+
+    // Ispis sume
+    printf("Suma: %.2lf + %.2lfi\n", suma.re, suma.im);
+
+    return 0;
+}
+
+-------------------------------------------------------------------------------
+5. Ispisati i poluprecnik prema datoj formuli
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Potrebno za sqrt funkciju
+
+// Struktura za trougao
+typedef struct {
+    double a;
+    double b;
+    double c;
+} TROUGAO;
+
+int main() {
+    TROUGAO t;
+    double obim, povrsina, s;
+    double poluprecnikUpisana, poluprecnikOpisana;
+
+    // Učitavanje stranica trougla
+    printf("Unesite duzine stranica trougla:\n");
+    scanf("%lf %lf %lf", &t.a, &t.b, &t.c);
+
+    // Provera da li je trougao validan
+    if (t.a + t.b > t.c && t.a + t.c > t.b && t.b + t.c > t.a) {
+        // Izračunavanje obima
+        obim = t.a + t.b + t.c;
+
+        // Izračunavanje površine koristeći Heronovu formulu
+        s = obim / 2;
+        povrsina = sqrt(s * (s - t.a) * (s - t.b) * (s - t.c));
+
+        // Izračunavanje poluprečnika upisane kružnice
+        poluprecnikUpisana = povrsina / s; // Formula za poluprečnik upisane kružnice
+
+        // Izračunavanje poluprečnika opisane kružnice
+        poluprecnikOpisana = (t.a * t.b * t.c) / (4 * povrsina); // Formula za poluprečnik opisane kružnice
+
+        // Ispis rezultata
+        printf("Obim trougla: %.2f\n", obim);
+        printf("Povrsina trougla: %.2f\n", povrsina);
+        printf("Poluprecnik upisane kruznice: %.2f\n", poluprecnikUpisana);
+        printf("Poluprecnik opisane kruznice: %.2f\n", poluprecnikOpisana);
+    } else {
+        printf("Unete stranice ne cine validan trougao.\n");
+    }
+
+    return 0;
+}
+
+----------------------------------------------------------------------------------------------------------------
+L5
+----------------------------------------------------------------------------------------------------------------
+2. Izracunaj sumu na glavnoj dijagonali matrice mnozenja
+
+#include <stdio.h>
+#include <stdlib.h>
+#define max 10
+
+/* Napisati program koji učitava dvije matrice realnih brojeva, a zatim ispisuje njihov zbir (ako matrice mogu da
+se saberu) i proizvod (ako matrice mogu da se pomnože). Učitavanje jedne matrice podrazumijeva učitavanje
+njenih dimenzija nxm (n ≤ 10, m ≤ 10) i elemenata. Ako matrice ne mogu da se saberu, potrebno je ispisati
+odgovarajuću poruku. Takođe, ako matrice ne mogu da se pomnože, potrebno je ispisati odgovarajuću poruku. */
+
+typedef struct {
+    int mat[max][max];
+    int n, m;
+} matrica;
+
+matrica scan() {
+    matrica matr;
+    int i, j;
+    do {
+        printf("dimenzije matrice: ");
+        scanf("%d %d", &matr.n, &matr.m);
+    } while (matr.n <= 0 || matr.m <= 0 || matr.n > 10 || matr.m > 10);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("mat[%d][%d] = ", i, j);
+            scanf("%d", &matr.mat[i][j]);
+        }
+    }
+    return matr;
+}
+
+void write(matrica matr) {
+    printf("Matrica %dx%d:\n", matr.n, matr.m);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("%d ", matr.mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+matrica sumarum(matrica matr1, matrica matr2) {
+    matrica sum;
+    if (matr1.n == matr2.n && matr1.m == matr2.m) {
+        sum.n = matr1.n;
+        sum.m = matr1.m;
+        for (int i = 0; i < matr1.n; i++) {
+            for (int j = 0; j < matr1.m; j++) {
+                sum.mat[i][j] = matr1.mat[i][j] + matr2.mat[i][j];
+            }
+        }
+    } else {
+        printf("Matrice se ne mogu sabrati jer nisu istih dimenzija!\n");
+        sum.n = 0;
+    }
+    return sum;
+}
+
+matrica product(matrica matr1, matrica matr2) {
+    matrica prod;
+    if (matr1.m == matr2.n) {
+        prod.n = matr1.n;
+        prod.m = matr2.m;
+        for (int i = 0; i < matr1.n; i++) {
+            for (int j = 0; j < matr2.m; j++) {
+                prod.mat[i][j] = 0;
+                for (int k = 0; k < matr1.m; k++) {
+                    prod.mat[i][j] += matr1.mat[i][k] * matr2.mat[k][j];
+                }
+            }
+        }
+    } else {
+        printf("Matrice se ne mogu pomnoziti!\n");
+        prod.n = 0;
+    }
+    return prod;
+}
+
+int main() {
+    matrica matr1, matr2, sum, prod;
+    int sumaDijagonale = 0;
+
+    printf("Unesi dimenzije matrice 1:\n");
+    matr1 = scan();
+    write(matr1);
+
+    printf("Unesi dimenzije matrice 2:\n");
+    matr2 = scan();
+    write(matr2);
+
+    sum = sumarum(matr1, matr2);
+    if (sum.n != 0) {
+        printf("Zbir matrica je:\n");
+        write(sum);
+    }
+
+    prod = product(matr1, matr2);
+    if (prod.n != 0) {
+        printf("Proizvod matrica je:\n");
+        write(prod);
+
+        // Izračunavanje sume na glavnoj dijagonali
+        int minDim = prod.n < prod.m ? prod.n : prod.m; // Najmanja dimenzija (u slučaju ne-kvadratne matrice)
+        for (int i = 0; i < minDim; i++) {
+            sumaDijagonale += prod.mat[i][i];
+        }
+        printf("Suma na glavnoj dijagonali proizvoda matrica je: %d\n", sumaDijagonale);
+    }
+
+    return 0;
+}
+
+------------------------------------------------------------------------------------------------------------------
+6. Unijeti popust izmedju 10 i 50 i ispisati ponovo tabelu sa cijenama nakon popusta, pri cemu je popust isti za sve artikle
+
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 30
+
+/* Definisati tip ARTIKAL kojim se reprezentuju podaci o jednom artiklu. Svaki artikl karakteriše identifikator
+(prirodan broj), naziv (string), količina (realan broj) i cijena (realan broj). Napisati program koji učitava
+prirodan broj n i niz od n podataka o artiklima. Učitani niz podataka o artiklima sortirati rastuće po
+identifikatoru. Na kraju, formatirano ispisati sortirani niz podataka o artiklima, kao i ukupnu cijenu svih
+artikala.
+Primjer ispisa:
+===== ==================== ====== ====== =========
+ID NAZIV CIJENA KOL. UKUPNO
+===== ==================== ====== ====== =========
+11111 Jabuke 2.30 1.00 2.30
+22222 Banane 3.10 1.50 4.65
+==================================================
+ UKUPNO: 6.95
+==================================================*/
+
+struct ARTIKL {
+    int id;
+    char naziv[MAX];
+    double kolicina, cijena;
+};
+
+int main() {
+    int n;
+    double popust;
+
+    do {
+        printf("Unesi n: ");
+        scanf("%d", &n);
+    } while(n < 1 || n > 100);
+
+    struct ARTIKL nizArtikala[n];
+
+    for(int i = 0; i < n; i++) {
+        printf("Unesi podatke za %d. artikla: \n", i + 1);
+        printf("\tUnesi identifikator: ");
+        scanf("%d", &nizArtikala[i].id);
+        printf("\tUnesi naziv: ");
+        scanf("%s", nizArtikala[i].naziv);
+        printf("\tUnesi kolicinu: ");
+        scanf("%lf", &nizArtikala[i].kolicina);
+        printf("\tUnesi cijenu: ");
+        scanf("%lf", &nizArtikala[i].cijena);
+    }
+
+    // Unos popusta
+    do {
+        printf("Unesite popust (između 10 i 50): ");
+        scanf("%lf", &popust);
+    } while (popust < 10 || popust > 50);
+
+    // Primjena popusta na cijene artikala
+    for (int i = 0; i < n; i++) {
+        nizArtikala[i].cijena = nizArtikala[i].cijena * (1 - popust / 100);
+    }
+
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = i + 1; j < n; j++) {
+            if(nizArtikala[i].id > nizArtikala[j].id) {
+                struct ARTIKL pom = nizArtikala[i];
+                nizArtikala[i] = nizArtikala[j];
+                nizArtikala[j] = pom;
+            }
+        }
+    }
+
+    double ukupno = 0;
+    printf("===== ==================== ====== ====== =========\n");
+    printf("ID    NAZIV                CIJENA KOL.   UKUPNO\n");
+    printf("===== ==================== ====== ====== =========\n");
+
+    for(int i = 0; i < n; i++) {
+        double ukupnoArtikal = nizArtikala[i].kolicina * nizArtikala[i].cijena;
+        ukupno += ukupnoArtikal;
+        printf("%-4d %-20s %-6.2lf %-6.2lf %-9.2lf\n", nizArtikala[i].id, nizArtikala[i].naziv, nizArtikala[i].cijena, nizArtikala[i].kolicina, ukupnoArtikal);
+    }
+
+    printf("==================================================\n");
+    printf(" UKUPNO: %.2lf\n", ukupno);
+    printf("==================================================\n");
+
+    return 0;
+}
+
+----------------------------------------------------------------------------------------------------------------------------
+L6
+----------------------------------------------------------------------------------------------------------------------------
+1. Pored n! ispisuje se i 2^100
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define max 1000
+
+int main() {
+    int n, fakt[max] = {1}, prenos;
+    unsigned long long dvaNaSto =  1;
+
+    do {
+        printf("Unesi prirodan broj manji ili jednak 100! ");
+        scanf("%d", &n);
+    } while (n > 100 || n < 0);
+
+    // Izračunavanje faktora
+    for (int i = 2; i <= n; i++) {
+        for (int j = 0, prenos = 0; j < max; j++) {
+            int pom = fakt[j] * i + prenos;
+            fakt[j] = pom % 10;
+            prenos = pom / 10;
+        }
+    }
+
+    int indeksPrvi = max - 1;
+    while (indeksPrvi >= 0 && fakt[indeksPrvi] == 0)
+        indeksPrvi--;
+
+    if (indeksPrvi < 0) {
+        printf("Faktorijel broja %d je 0\n", n);
+    } else {
+        printf("\nFaktorijel broja %d je ", n);
+        for (int j = indeksPrvi; j >= 0; j--) {
+            printf("%d", fakt[j]);
+        }
+        printf("\n");
+    }
+
+    // Izračunavanje 2^100
+    for (int i = 0; i < 100; i++) {
+        dvaNaSto *= 2;
+    }
+    printf("2^100 je: %llu\n", dvaNaSto);
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------
+5. Pored P i O ispisati i visinu Ha
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Potrebno za sqrt funkciju
+
+// Struktura za trougao
+typedef struct {
+    double a;
+    double b;
+    double c;
+} TROUGAO;
+
+int main() {
+    TROUGAO t;
+    double obim, povrsina, s, visinaHa;
+
+    // Učitavanje stranica trougla
+    printf("Unesite duzine stranica trougla:\n");
+    scanf("%lf %lf %lf", &t.a, &t.b, &t.c);
+
+    // Provera da li je trougao validan
+    if (t.a + t.b > t.c && t.a + t.c > t.b && t.b + t.c > t.a) {
+        // Izračunavanje obima
+        obim = t.a + t.b + t.c;
+
+        // Izračunavanje površine koristeći Heronovu formulu
+        s = obim / 2;
+        povrsina = sqrt(s * (s - t.a) * (s - t.b) * (s - t.c));
+
+        // Izračunavanje visine Ha na stranicu a
+        visinaHa = 2 * povrsina / t.a;
+
+        // Ispis rezultata
+        printf("Obim trougla: %.2f\n", obim);
+        printf("Povrsina trougla: %.2f\n", povrsina);
+        printf("Visina na stranicu a (Ha): %.2f\n", visinaHa);
+    } else {
+        printf("Unete stranice ne cine validan trougao.\n");
+    }
+
+    return 0;
+}
+
+------------------------------------------------------------------------------------------
+L8
+------------------------------------------------------------------------------------------
+5. Naci ugao alfa preko arccos(x)
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Potrebno za sqrt i acos funkcije
+
+// Struktura za trougao
+typedef struct {
+    double a;
+    double b;
+    double c;
+} TROUGAO;
+
+int main() {
+    TROUGAO t;
+    double obim, povrsina, s, ugaoAlfa;
+
+    // Učitavanje stranica trougla
+    printf("Unesite duzine stranica trougla:\n");
+    scanf("%lf %lf %lf", &t.a, &t.b, &t.c);
+
+    // Provera da li je trougao validan
+    if (t.a + t.b > t.c && t.a + t.c > t.b && t.b + t.c > t.a) {
+        // Izračunavanje obima
+        obim = t.a + t.b + t.c;
+
+        // Izračunavanje površine koristeći Heronovu formulu
+        s = obim / 2;
+        povrsina = sqrt(s * (s - t.a) * (s - t.b) * (s - t.c));
+
+        // Izračunavanje ugla α koristeći kosinusnu teoremu
+        ugaoAlfa = acos((t.b * t.b + t.c * t.c - t.a * t.a) / (2 * t.b * t.c)) * (180.0 / M_PI); // U radijanima, konvertujemo u stepene
+
+        // Ispis rezultata
+        printf("Obim trougla: %.2f\n", obim);
+        printf("Povrsina trougla: %.2f\n", povrsina);
+        printf("Visina na stranicu a (Ha): %.2f\n", visinaHa);
+        printf("Ugao alfa: %.2f stepeni\n", ugaoAlfa);
+    } else {
+        printf("Unete stranice ne cine validan trougao.\n");
+    }
+
+    return 0;
+}
+
+---------------------------------------------------------------------------------------------------------------
+7. Unesi godinu i ispisi sortiranu tabelu studenata rodjenih te godine
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int dan;
+    int mjesec;
+    int godina;
+} DATUM;
+
+typedef struct {
+    int brojIndeksa;
+    char ime[50];
+    char prezime[50];
+    DATUM datumRodjenja;
+    double prosjek;
+} STUDENT;
+
+int main() {
+    int n, trazenaGodina;
+    STUDENT studenti[100];
+
+    printf("Unesite broj studenata: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; ++i) {
+        printf("Unesite podatke za studenta %d (broj indeksa, ime, prezime, datum rodjenja (dan mjesec godina), prosjek):\n", i + 1);
+        scanf("%d %s %s %d %d %d %lf", &studenti[i].brojIndeksa, studenti[i].ime, studenti[i].prezime,
+              &studenti[i].datumRodjenja.dan, &studenti[i].datumRodjenja.mjesec, &studenti[i].datumRodjenja.godina,
+              &studenti[i].prosjek);
+    }
+
+    // Unos godine
+    printf("Unesite godinu za pretragu: ");
+    scanf("%d", &trazenaGodina);
+
+    // Sortiranje studenata po datumu rodjenja
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (studenti[j].datumRodjenja.godina > studenti[j + 1].datumRodjenja.godina ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec > studenti[j + 1].datumRodjenja.mjesec) ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec == studenti[j + 1].datumRodjenja.mjesec &&
+                studenti[j].datumRodjenja.dan > studenti[j + 1].datumRodjenja.dan)) {
+
+                STUDENT temp = studenti[j];
+                studenti[j] = studenti[j + 1];
+                studenti[j + 1] = temp;
+            }
+        }
+    }
+
+    // Ispis studenata rođenih u traženoj godini
+    printf("Studenti rođeni %d. godine:\n", trazenaGodina);
+    printf("RB. PREZIME           IME               DATUM RODJ.   PROSJEK\n");
+    printf("=== =============== =============== =========== =======\n");
+
+    int rb = 1;
+    for (int i = 0; i < n; ++i) {
+        if (studenti[i].datumRodjenja.godina == trazenaGodina) {
+            printf("%-3d %-15s %-15s %02d.%02d.%04d. %.2f\n", rb++, studenti[i].prezime, studenti[i].ime,
+                   studenti[i].datumRodjenja.dan, studenti[i].datumRodjenja.mjesec, studenti[i].datumRodjenja.godina,
+                   studenti[i].prosjek);
+        }
+    }
+
+    printf("=== =============== =============== =========== =======\n");
+
+    return 0;
+}
+
+-------------------------------------------------------------------------------------------------------
+L9
+-------------------------------------------------------------------------------------------------------
+2. U proizvodu matrica naci i ispisati najveci broj
+
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX 10
+
+typedef struct {
+    int mat[MAX][MAX];
+    int n, m;
+} MATRICA;
+
+MATRICA scan() {
+    MATRICA matr;
+    do {
+        printf("Dimenzije matrice: ");
+        scanf("%d %d", &matr.n, &matr.m);
+    } while (matr.n <= 0 || matr.m <= 0 || matr.n > MAX || matr.m > MAX);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("mat[%d][%d] = ", i, j);
+            scanf("%d", &matr.mat[i][j]);
+        }
+    }
+    return matr;
+}
+
+void write(MATRICA matr) {
+    printf("Matrica %dx%d:\n", matr.n, matr.m);
+    for (int i = 0; i < matr.n; i++) {
+        for (int j = 0; j < matr.m; j++) {
+            printf("%d ", matr.mat[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+MATRICA product(MATRICA matr1, MATRICA matr2) {
+    MATRICA prod;
+    if (matr1.m == matr2.n) {
+        prod.n = matr1.n;
+        prod.m = matr2.m;
+        for (int i = 0; i < matr1.n; i++) {
+            for (int j = 0; j < matr2.m; j++) {
+                prod.mat[i][j] = 0;
+                for (int k = 0; k < matr1.m; k++) {
+                    prod.mat[i][j] += matr1.mat[i][k] * matr2.mat[k][j];
+                }
+            }
+        }
+    } else {
+        printf("Matrice se ne mogu pomnoziti!\n");
+        prod.n = 0;
+        prod.m = 0;
+    }
+    return prod;
+}
+
+int main() {
+    MATRICA matr1, matr2, prod;
+    int maxVal = -2147483648; // Inicijalizacija na najmanji mogući int
+
+    printf("Unesi dimenzije matrice 1:\n");
+    matr1 = scan();
+    write(matr1);
+
+    printf("Unesi dimenzije matrice 2:\n");
+    matr2 = scan();
+    write(matr2);
+
+    prod = product(matr1, matr2);
+    if (prod.n != 0) {
+        printf("Proizvod matrica je:\n");
+        write(prod);
+
+        // Pronalaženje najvećeg broja u proizvodu matrica
+        for (int i = 0; i < prod.n; i++) {
+            for (int j = 0; j < prod.m; j++) {
+                if (prod.mat[i][j] > maxVal) {
+                    maxVal = prod.mat[i][j];
+                }
+            }
+        }
+        printf("Najveći broj u proizvodu matrica je: %d\n", maxVal);
+    }
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------------
+7. Naknadno unijeti jos jedan datum i ispisati studente mladje od tog datuma
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct {
+    int dan;
+    int mjesec;
+    int godina;
+} DATUM;
+
+typedef struct {
+    int brojIndeksa;
+    char ime[50];
+    char prezime[50];
+    DATUM datumRodjenja;
+    double prosjek;
+} STUDENT;
+
+int main() {
+    int n;
+    STUDENT studenti[100];
+    DATUM datumUnosa;
+
+    printf("Unesite broj studenata: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; ++i) {
+        printf("Unesite podatke za studenta %d (broj indeksa, ime, prezime, datum rodjenja (dan mjesec godina), prosjek):\n", i + 1);
+        scanf("%d %s %s %d %d %d %lf", &studenti[i].brojIndeksa, studenti[i].ime, studenti[i].prezime,
+              &studenti[i].datumRodjenja.dan, &studenti[i].datumRodjenja.mjesec, &studenti[i].datumRodjenja.godina,
+              &studenti[i].prosjek);
+    }
+
+    // Unos datuma
+    printf("Unesite datum (dan mjesec godina): ");
+    scanf("%d %d %d", &datumUnosa.dan, &datumUnosa.mjesec, &datumUnosa.godina);
+
+    // Sortiranje studenata po datumu rodjenja
+    for (int i = 0; i < n - 1; ++i) {
+        for (int j = 0; j < n - i - 1; ++j) {
+            if (studenti[j].datumRodjenja.godina > studenti[j + 1].datumRodjenja.godina ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec > studenti[j + 1].datumRodjenja.mjesec) ||
+               (studenti[j].datumRodjenja.godina == studenti[j + 1].datumRodjenja.godina &&
+                studenti[j].datumRodjenja.mjesec == studenti[j + 1].datumRodjenja.mjesec &&
+                studenti[j].datumRodjenja.dan > studenti[j + 1].datumRodjenja.dan)) {
+
+                STUDENT temp = studenti[j];
+                studenti[j] = studenti[j + 1];
+                studenti[j + 1] = temp;
+            }
+        }
+    }
+
+    // Ispis studenata mlađih od unesenog datuma
+    printf("Studenti mlađi od %02d.%02d.%04d:\n", datumUnosa.dan, datumUnosa.mjesec, datumUnosa.godina);
+    printf("RB. PREZIME           IME               DATUM RODJ.   PROSJEK\n");
+    printf("=== =============== =============== =========== =======\n");
+
+    int rb = 1;
+    for (int i = 0; i < n; ++i) {
+        if (studenti[i].datumRodjenja.godina > datumUnosa.godina ||
+           (studenti[i].datumRodjenja.godina == datumUnosa.godina &&
+            studenti[i].datumRodjenja.mjesec > datumUnosa.mjesec) ||
+           (studenti[i].datumRodjenja.godina == datumUnosa.godina &&
+            studenti[i].datumRodjenja.mjesec == datumUnosa.mjesec &&
+            studenti[i].datumRodjenja.dan > datumUnosa.dan)) {
+            printf("%-3d %-15s %-15s %02d.%02d.%04d. %.2f\n", rb++, studenti[i].prezime, studenti[i].ime,
+                   studenti[i].datumRodjenja.dan, studenti[i].datumRodjenja.mjesec, studenti[i].datumRodjenja.godina,
+                   studenti[i].prosjek);
+        }
+    }
+
+    printf("=== =============== =============== =========== =======\n");
+
+    return 0;
+}
+
+-------------------------------------------------------------------------------------------
+L10
+-------------------------------------------------------------------------------------------
+4. Dodati jos jedan razlomak, sabrati sva tri, i pokratiti ako se mogu pokratiti
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int brojilac;
+    int imenilac;
+} razlomak;
+
+int main() {
+    razlomak r1, r2, r3, rezultat;
+    int gcd, temp, a, b;
+
+    printf("Unesi prvi razlomak: ");
+    scanf("%d %d", &r1.brojilac, &r1.imenilac);
+
+    printf("Unesi drugi razlomak: ");
+    scanf("%d %d", &r2.brojilac, &r2.imenilac);
+
+    printf("Unesi treći razlomak: ");
+    scanf("%d %d", &r3.brojilac, &r3.imenilac);
+
+    // Sabiranje razlomaka s uslovom za isti imenilac
+    if (r1.imenilac == r2.imenilac && r2.imenilac == r3.imenilac) {
+        rezultat.brojilac = r1.brojilac + r2.brojilac + r3.brojilac;
+        rezultat.imenilac = r1.imenilac;
+    } else if (r1.imenilac == r2.imenilac && r2.imenilac != r3.imenilac) {
+        rezultat.brojilac = r1.brojilac * r3.imenilac + r2.brojilac * r3.imenilac + r3.brojilac * r1.imenilac;
+        rezultat.imenilac = r1.imenilac * r3.imenilac;
+    } else if (r1.imenilac == r3.imenilac && r3.imenilac != r2.imenilac) {
+        rezultat.brojilac = r1.brojilac * r2.imenilac + r2.brojilac * r1.imenilac + r3.brojilac * r2.imenilac;
+        rezultat.imenilac = r1.imenilac * r2.imenilac;
+    } else if (r2.imenilac == r3.imenilac && r3.imenilac != r1.imenilac) {
+        rezultat.brojilac = r1.brojilac * r2.imenilac + r2.brojilac * r1.imenilac + r3.brojilac * r1.imenilac;
+        rezultat.imenilac = r1.imenilac * r2.imenilac;
+    } else {
+        rezultat.brojilac = r1.brojilac * r2.imenilac * r3.imenilac +
+                            r2.brojilac * r1.imenilac * r3.imenilac +
+                            r3.brojilac * r1.imenilac * r2.imenilac;
+        rezultat.imenilac = r1.imenilac * r2.imenilac * r3.imenilac;
+    }
+
+    // Skraćivanje razlomka
+    a = rezultat.brojilac;
+    b = rezultat.imenilac;
+
+    while (b != 0) {
+        temp = b;
+        b = a % b;
+        a = temp;
+    }
+    gcd = a;
+    rezultat.brojilac /= gcd;
+    rezultat.imenilac /= gcd;
+
+    printf("Rezultujući razlomak je %d/%d\n", rezultat.brojilac, rezultat.imenilac);
+    return 0;
+}
+
+
+----------------------------------------------------------------------------------------------------
+7. Unijeti prosjek i ispisati studente koji imaju veci prosjek od unesenog
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct {
+    int dan;
+    int mjesec;
+    int godina;
+} DATUM;
+
+typedef struct {
+    int brojIndeksa;
+    char ime[50];
+    char prezime[50];
+    DATUM datumRodjenja;
+    double prosjek;
+} STUDENT;
+
+int main() {
+    int n;
+    double uneseniProsjek;
+    STUDENT studenti[100];
+
+    printf("Unesite broj studenata: ");
+    scanf("%d", &n);
+
+    for (int i = 0; i < n; ++i) {
+        printf("Unesite podatke za studenta %d (broj indeksa, ime, prezime, datum rodjenja (dan mjesec godina), prosjek):\n", i + 1);
+        scanf("%d %s %s %d %d %d %lf", &studenti[i].brojIndeksa, studenti[i].ime, studenti[i].prezime,
+              &studenti[i].datumRodjenja.dan, &studenti[i].datumRodjenja.mjesec, &studenti[i].datumRodjenja.godina,
+              &studenti[i].prosjek);
+    }
+
+    // Unos prosjeka
+    printf("Unesite prosjek: ");
+    scanf("%lf", &uneseniProsjek);
+
+    // Ispis studenata sa prosjekom većim od unesenog
+    printf("Studenti sa prosjekom većim od %.2f:\n", uneseniProsjek);
+    printf("RB. PREZIME           IME               DATUM RODJ.   PROSJEK\n");
+    printf("=== =============== =============== =========== =======\n");
+
+    int rb = 1;
+    for (int i = 0; i < n; ++i) {
+        if (studenti[i].prosjek > uneseniProsjek) {
+            printf("%-3d %-15s %-15s %02d.%02d.%04d. %.2f\n", rb++, studenti[i].prezime, studenti[i].ime,
+                   studenti[i].datumRodjenja.dan, studenti[i].datumRodjenja.mjesec, studenti[i].datumRodjenja.godina,
+                   studenti[i].prosjek);
+        }
+    }
+
+    printf("=== =============== =============== =========== =======\n");
+
+    return 0;
+}
+
+-----------------------------------------------------------------------------------------------
+fejk L9?
+-----------------------------------------------------------------------------------------------
+1. Dodatno naci n^n
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+#define max 1000
+
+int main() {
+    int n, fakt[max] = {1}, prenos;
+    unsigned long long nNaN = 1;
+
+    do {
+        printf("Unesi prirodan broj manji ili jednak 100! ");
+        scanf("%d", &n);
+    } while (n > 100 || n < 0);
+
+    // Izračunavanje faktora
+    for (int i = 2; i <= n; i++) {
+        for (int j = 0, prenos = 0; j < max; j++) {
+            int pom = fakt[j] * i + prenos;
+            fakt[j] = pom % 10;
+            prenos = pom / 10;
+        }
+    }
+
+    int indeksPrvi = max - 1;
+    while (indeksPrvi >= 0 && fakt[indeksPrvi] == 0)
+        indeksPrvi--;
+
+    if (indeksPrvi < 0) {
+        printf("Faktorijel broja %d je 0\n", n);
+    } else {
+        printf("\nFaktorijel broja %d je ", n);
+        for (int j = indeksPrvi; j >= 0; j--) {
+            printf("%d", fakt[j]);
+        }
+        printf("\n");
+    }
+
+    // Izračunavanje n^n
+    for (int i = 0; i < n; i++) {
+        nNaN *= n;
+    }
+    printf("%d^%d je: %llu\n", n, n, nNaN);
+
+    return 0;
+}
+
+---------------------------------------------------------------------------------------
+3. Izracunaj aritmeticku sredinu modula i ispisi sve kompleksne brojeve ciji je moduo veci od aritmeticke sredine
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h> // Dodao ovu biblioteku za sqrt funkciju
+#define max 100
+
+typedef struct {
+    double re, im;
+} kompleks;
+
+int main() {
+    int n;
+    kompleks niz[max];
+    double moduo[max];
+    double sumaModula = 0, aritmetickaSredina;
+
+    // Unos broja kompleksnih brojeva
+    do {
+        printf("Unesite broj kompleksnih brojeva: ");
+        scanf("%d", &n);
+    } while (n <= 0);
+
+    // Unos kompleksnih brojeva i izračunavanje modula
+    printf("Unesite kompleksne brojeve (realni i imaginarni dio):\n");
+    for (int i = 0; i < n; i++) {
+        scanf("%lf %lf", &niz[i].re, &niz[i].im);
+        moduo[i] = sqrt(niz[i].re * niz[i].re + niz[i].im * niz[i].im);
+        sumaModula += moduo[i];
+    }
+
+    // Izračunavanje aritmetičke sredine modula
+    aritmetickaSredina = sumaModula / n;
+
+    // Ispis kompleksnih brojeva čiji je moduo veći od aritmetičke sredine
+    printf("Kompleksni brojevi čiji je moduo veći od aritmetičke sredine (%.2f):\n", aritmetickaSredina);
+    for (int i = 0; i < n; i++) {
+        if (moduo[i] > aritmetickaSredina) {
+            printf("%.2lf + %.2lfi (moduo: %.2f)\n", niz[i].re, niz[i].im, moduo[i]);
+        }
+    }
+
+    return 0;
+}
+
+--------------------------------------------------------------------------------------------------

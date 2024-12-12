@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1733967602 source:c:\users\korisnik\desktop\c\p1 - lab\l09\l09 - 2 mod\main.c
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+
